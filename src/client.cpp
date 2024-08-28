@@ -9,7 +9,7 @@ using namespace std;
 int main(int argc, char *argv[])
 {
   char *serverIpAddress = "127.0.0.1";
-  int port = 5201;
+  int port = 2401;
   char message[2100];
 
   struct hostent *host = gethostbyname(serverIpAddress);
