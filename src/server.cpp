@@ -10,6 +10,7 @@
 #include <string.h>
 #include <netdb.h>
 #include <pthread.h>
+#include "../include/key-value.h"
 
 using namespace std;
 int port = 2401;
@@ -23,6 +24,11 @@ int clientDescriptor2;
 pthread_t t1;
 pthread_t t2;
 pthread_t t3;
+
+KeyValueStore store;
+store.set();
+
+
 void *serverResponse(void *)
 {
   listen(serverSocket, 5);
