@@ -6,6 +6,8 @@
 
 using namespace std;
 
+KeyValueStore::KeyValueStore() {}
+
 void KeyValueStore::set()
 {
   printf("TRYING SET\n");

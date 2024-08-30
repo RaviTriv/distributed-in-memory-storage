@@ -8,7 +8,8 @@ using namespace std;
 class KeyValueStore
 {
 public:
-  map<string, string> m;
- //KeyValueStore();
+  KeyValueStore();
   void set();
+private:
+  map<string, string> m;
 };

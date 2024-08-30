@@ -25,9 +25,6 @@ pthread_t t1;
 pthread_t t2;
 pthread_t t3;
 
-KeyValueStore store;
-//store.set();
-
 
 void *serverResponse(void *)
 {
@@ -87,6 +84,8 @@ void *serverResponse2(void *)
 
 int main(int argc, char *argv[])
 {
+  KeyValueStore store;
+  store.set();
   memset(&serverAddress, '\0', sizeof(serverAddress));
   serverAddress.sin_family = AF_INET;
   serverAddress.sin_addr.s_addr = htonl(INADDR_ANY);
