@@ -26,7 +26,7 @@ pthread_t t2;
 pthread_t t3;
 
 KeyValueStore store;
-store.set();
+//store.set();
 
 
 void *serverResponse(void *)

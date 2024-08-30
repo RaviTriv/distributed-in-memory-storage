@@ -9,6 +9,6 @@ class KeyValueStore
 {
 public:
   map<string, string> m;
-  KeyValueStore();
+ //KeyValueStore();
   void set();
 };
