@@ -25,7 +25,6 @@ pthread_t t1;
 pthread_t t2;
 pthread_t t3;
 
-
 void *serverResponse(void *)
 {
   listen(serverSocket, 5);
@@ -85,7 +84,11 @@ void *serverResponse2(void *)
 int main(int argc, char *argv[])
 {
   KeyValueStore store;
-  store.set();
+
+  store.set("hello", "world");
+  
+  //printf("KEY: hello, Value: %s\n", store.get("hello").c_str());
+  
   memset(&serverAddress, '\0', sizeof(serverAddress));
   serverAddress.sin_family = AF_INET;
   serverAddress.sin_addr.s_addr = htonl(INADDR_ANY);
