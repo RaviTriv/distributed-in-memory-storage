@@ -8,6 +8,7 @@ message(STATUS ${CMAKE_SOURCE_DIR})
 set(SOURCES
     src/server.cpp
     src/key-value.cpp
+    src/persistence.cpp
 )
 
 add_executable(in_memory_storage ${SOURCES})

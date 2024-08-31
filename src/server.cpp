@@ -11,6 +11,7 @@
 #include <netdb.h>
 #include <pthread.h>
 #include "../include/key-value.h"
+#include "../include/persistence.h"
 
 using namespace std;
 int port = 2401;
@@ -85,6 +86,7 @@ int main(int argc, char *argv[])
 {
   KeyValueStore store;
 
+  DataPersistence backup;
   store.set("hello", "world");
 
   store.update("hello", "yo");
@@ -92,7 +94,7 @@ int main(int argc, char *argv[])
   printf("KEY: hello, Value: %s\n", store.get("hello").c_str());
 
   store.deletePair("hello");
-
+  backup.write("hello", "world");
   memset(&serverAddress, '\0', sizeof(serverAddress));
   serverAddress.sin_family = AF_INET;
   serverAddress.sin_addr.s_addr = htonl(INADDR_ANY);
