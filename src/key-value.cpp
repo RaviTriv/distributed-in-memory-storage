@@ -20,3 +20,12 @@ string KeyValueStore::get(string key)
 {
   return m.at(key);
 }
+
+void KeyValueStore::update(string key, string value)
+{
+  m[key] = value;
+}
+
+void KeyValueStore::deletePair(string key){
+  m.erase(key);
+}

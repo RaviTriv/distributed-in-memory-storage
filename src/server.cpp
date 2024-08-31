@@ -86,9 +86,13 @@ int main(int argc, char *argv[])
   KeyValueStore store;
 
   store.set("hello", "world");
-  
-  //printf("KEY: hello, Value: %s\n", store.get("hello").c_str());
-  
+
+  store.update("hello", "yo");
+
+  printf("KEY: hello, Value: %s\n", store.get("hello").c_str());
+
+  store.deletePair("hello");
+
   memset(&serverAddress, '\0', sizeof(serverAddress));
   serverAddress.sin_family = AF_INET;
   serverAddress.sin_addr.s_addr = htonl(INADDR_ANY);
