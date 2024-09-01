@@ -10,5 +10,5 @@ class DataPersistence{
     DataPersistence();
     void write(string key, string val);
   private:
-    FILE *databin;
+    //FILE *databin;
 };

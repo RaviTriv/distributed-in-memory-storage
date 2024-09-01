@@ -10,9 +10,19 @@ using namespace std;
 DataPersistence::DataPersistence()
 {
 }
-void DataPersistence::write(string key, string val)
+void DataPersistence::write(std::string key, std::string val)
 {
-  databin = fopen("src/data.txt", "a+");
-  printf("HERE\n");
-  fprintf(databin, "hello world");
+  FILE *databin;
+  databin = fopen("../data/data.txt", "w");
+  if (databin != NULL)
+  {
+    char line[1024];
+    sprintf(line, "{%s : %s}\n", key.c_str(), val.c_str());
+    fputs(line, databin);
+    fclose(databin);
+  }
+  else
+  {
+    printf("ERROR \n");
+  }
 }
