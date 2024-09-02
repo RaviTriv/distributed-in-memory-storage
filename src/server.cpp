@@ -87,8 +87,10 @@ int main(int argc, char *argv[])
   KeyValueStore store;
 
   DataPersistence backup;
-  
+
   backup.write("hello", "world");
+
+  printf("READING: %s", backup.read().c_str());
 
   store.set("hello", "world");
 

@@ -10,9 +10,9 @@ using namespace std;
 DataPersistence::DataPersistence()
 {
 }
+
 void DataPersistence::write(std::string key, std::string val)
 {
-  FILE *databin;
   databin = fopen("../data/data.txt", "w");
   if (databin != NULL)
   {
@@ -25,4 +25,12 @@ void DataPersistence::write(std::string key, std::string val)
   {
     printf("ERROR \n");
   }
+}
+
+string DataPersistence::read()
+{
+  char res[1024];
+  databin = fopen("../data/data.txt", "r");
+  fclose(databin);
+  return res;
 }
