@@ -5,15 +5,21 @@ project (in_memory_storage)
 
 message(STATUS ${CMAKE_SOURCE_DIR})
 
-set(SOURCES
+set(SERVER_SOURCES
     src/server.cpp
     src/key-value.cpp
     src/persistence.cpp
 )
 
-add_executable(in_memory_storage ${SOURCES})
-
-target_include_directories(in_memory_storage
-    PRIVATE 
-        ${CMAKE_SOURCE_DIR}/include
+set(CLIENT_SOURCES
+    src/client.cpp
 )
+
+add_executable(server ${SERVER_SOURCES})
+
+add_executable(client ${CLIENT_SOURCES})
+
+# target_include_directories(in_memory_storage
+#     PRIVATE 
+#         ${CMAKE_SOURCE_DIR}/include
+# )
