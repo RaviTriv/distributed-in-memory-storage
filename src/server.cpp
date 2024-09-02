@@ -12,9 +12,11 @@
 #include <pthread.h>
 #include "../include/key-value.h"
 #include "../include/persistence.h"
+#include "../include/replication.h"
 
 using namespace std;
-int port = 2401;
+int port = 4200;
+int nodeId = 1;
 char message[2100];
 sockaddr_in serverAddress;
 int serverSocket = socket(AF_INET, SOCK_STREAM, 0);
@@ -87,23 +89,16 @@ int main(int argc, char *argv[])
   if (argc >= 2)
   {
     port = atoi(argv[1]);
+    nodeId = atoi(argv[2]);
   }
 
+  if(nodeId == 0){
+    Replication replica;
+  }
+  
   KeyValueStore store;
-
   DataPersistence backup;
 
-  backup.write("hello", "world");
-
-  printf("READING: %s", backup.read().c_str());
-
-  store.set("hello", "world");
-
-  store.update("hello", "yo");
-
-  printf("KEY: hello, Value: %s\n", store.get("hello").c_str());
-
-  store.deletePair("hello");
   memset(&serverAddress, '\0', sizeof(serverAddress));
   serverAddress.sin_family = AF_INET;
   serverAddress.sin_addr.s_addr = htonl(INADDR_ANY);
