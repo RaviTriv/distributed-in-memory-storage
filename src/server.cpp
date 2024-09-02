@@ -84,6 +84,11 @@ void *serverResponse2(void *)
 
 int main(int argc, char *argv[])
 {
+  if (argc >= 2)
+  {
+    port = atoi(argv[1]);
+  }
+
   KeyValueStore store;
 
   DataPersistence backup;
