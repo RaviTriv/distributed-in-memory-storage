@@ -13,6 +13,7 @@
 #include "../include/key-value.h"
 #include "../include/persistence.h"
 #include "../include/replication.h"
+#include "../include/thread.h"
 
 using namespace std;
 int port = 4200;
@@ -98,7 +99,6 @@ int main(int argc, char *argv[])
   
   KeyValueStore store;
   DataPersistence backup;
-
   memset(&serverAddress, '\0', sizeof(serverAddress));
   serverAddress.sin_family = AF_INET;
   serverAddress.sin_addr.s_addr = htonl(INADDR_ANY);
