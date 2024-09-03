@@ -10,6 +10,7 @@ set(SERVER_SOURCES
     src/key-value.cpp
     src/persistence.cpp
     src/replication.cpp
+    src/thread.cpp
 )
 
 set(CLIENT_SOURCES
