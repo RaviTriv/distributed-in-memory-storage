@@ -14,6 +14,7 @@
 #include "../include/persistence.h"
 #include "../include/replication.h"
 #include "../include/thread.h"
+#include "../include/work-queue.h"
 
 using namespace std;
 int port = 4200;
@@ -93,10 +94,11 @@ int main(int argc, char *argv[])
     nodeId = atoi(argv[2]);
   }
 
-  if(nodeId == 0){
+  if (nodeId == 0)
+  {
     Replication replica;
   }
-  
+
   KeyValueStore store;
   DataPersistence backup;
   memset(&serverAddress, '\0', sizeof(serverAddress));
