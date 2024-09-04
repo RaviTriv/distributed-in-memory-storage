@@ -1,15 +1,9 @@
 #include <iostream>
 #include <string>
 #include <stdio.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
-#include <netdb.h>
-#include <pthread.h>
 #include "../include/key-value.h"
 #include "../include/persistence.h"
 #include "../include/replication.h"
@@ -38,6 +32,7 @@ int main(int argc, char *argv[])
   KeyValueStore store;
   DataPersistence backup;
   TcpServer TcpServer(port, nodeId);
+  TcpServer.startListenting();
   while (true)
   {
 
@@ -50,6 +45,7 @@ int main(int argc, char *argv[])
     {
       cout << "ENDING SESSION" << endl;
       send(TcpServer.clientDescriptor, (char *)"QUIT", strlen(message), 0);
+      TcpServer.stopListenting();
       exit(0);
     }
 
@@ -57,6 +53,4 @@ int main(int argc, char *argv[])
     strcpy(message, "TEST RESPONSE");
     send(TcpServer.clientDescriptor, (char *)&message, strlen(message), 0);
   }
-  // close(clientDescriptor1);
-  // close(serverSocket);
 }

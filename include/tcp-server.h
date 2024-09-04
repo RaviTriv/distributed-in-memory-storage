@@ -8,6 +8,9 @@ class TcpServer
 {
 public:
   TcpServer(int port, int node);
+  void startListenting();
+  void stopListenting();
+
   //~TcpServer();
   int clientDescriptor;
 
