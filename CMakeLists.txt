@@ -11,6 +11,7 @@ set(SERVER_SOURCES
     src/persistence.cpp
     src/replication.cpp
     src/thread.cpp
+    src/tcp-server.cpp
 )
 
 set(CLIENT_SOURCES
