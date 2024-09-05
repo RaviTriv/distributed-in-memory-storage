@@ -10,11 +10,29 @@
 #include "../include/thread.h"
 #include "../include/work-queue.h"
 #include "../include/tcp-server.h"
+#include "../include/task.h"
 
 using namespace std;
 int port = 4200;
 int nodeId = 1;
 char message[2100];
+
+class ListenerThread : public Thread
+{
+  WorkQueue<Task *> &q;
+
+public:
+  ListenerThread(WorkQueue<Task *> &queue) : q(queue) {}
+
+  void *run()
+  {
+    for (int i = 0;; i++)
+    {
+      Task *t = (Task *)q.remove();
+    }
+    return NULL;
+  }
+};
 
 int main(int argc, char *argv[])
 {
@@ -32,6 +50,19 @@ int main(int argc, char *argv[])
   KeyValueStore store;
   DataPersistence backup;
   TcpServer TcpServer(port, nodeId);
+
+  WorkQueue<Task *>
+      queue;
+  Task *t1;
+  Task *t2;
+
+  // Thread Pool
+  ListenerThread *thread1 = new ListenerThread(queue);
+  ListenerThread *thread2 = new ListenerThread(queue);
+
+  thread1->start();
+  thread2->start();
+
   TcpServer.startListenting();
   while (true)
   {

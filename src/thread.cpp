@@ -25,7 +25,7 @@ static void *runThread(void *arg)
   return ((Thread *)arg)->run();
 }
 
-int Thread::start(void *arg)
+int Thread::start()
 {
   int res = pthread_create(&threadId, NULL, runThread, this);
   if (res == 0)

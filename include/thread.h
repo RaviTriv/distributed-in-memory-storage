@@ -5,7 +5,7 @@ class Thread
 public:
   Thread();
   virtual ~Thread();
-  int start(void *arg);
+  int start();
   int join();
   int detach();
   pthread_t getThreadId();
