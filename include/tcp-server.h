@@ -1,24 +1,22 @@
-#include <netdb.h>
-#include <sys/types.h>
-#include <sys/socket.h>
+#include <string>
 #include <netinet/in.h>
-#include <arpa/inet.h>
+#include "network-stream.h"
 
-class TcpServer
+class TCPServer
 {
-public:
-  TcpServer(int port, int node);
-  void startListenting();
-  void stopListenting();
-
-  //~TcpServer();
-  int clientDescriptor;
-
-private:
-  sockaddr_in c1Address;
-  sockaddr_in c2Address;
-  int node;
+  sockaddr_in s1Address;
+  sockaddr_in s2Address;
   int c1Socket;
+  int clientDescriptor;
+  string ipAddress;
+  int port;
   sockaddr_in clientAddress;
   socklen_t clientAddressLength = sizeof(clientAddress);
+
+public:
+  TCPServer(int port);
+  ~TCPServer();
+
+  NetworkStream *accept();
+private:
 };
