@@ -12,10 +12,15 @@ set(SERVER_SOURCES
     src/replication.cpp
     src/thread.cpp
     src/tcp-server.cpp
+    src/network-stream.cpp
+    src/tcp-client.cpp
+    src/tcp-server.cpp
 )
 
 set(CLIENT_SOURCES
     src/client.cpp
+    src/network-stream.cpp
+    src/tcp-client.cpp
 )
 
 add_executable(server ${SERVER_SOURCES})

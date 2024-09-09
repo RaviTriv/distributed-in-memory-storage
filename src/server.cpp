@@ -15,24 +15,7 @@
 using namespace std;
 int port = 4200;
 int nodeId = 1;
-char message[2100];
-
-class ListenerThread : public Thread
-{
-  WorkQueue<Task *> &q;
-
-public:
-  ListenerThread(WorkQueue<Task *> &queue) : q(queue) {}
-
-  void *run()
-  {
-    for (int i = 0;; i++)
-    {
-      Task *t = (Task *)q.remove();
-    }
-    return NULL;
-  }
-};
+char message[256];
 
 int main(int argc, char *argv[])
 {
@@ -47,41 +30,23 @@ int main(int argc, char *argv[])
     Replication replica;
   }
 
+  char ipAddy[90];
+  strcpy(ipAddy, "127.0.0.1");
+
   KeyValueStore store;
   DataPersistence backup;
-  TcpServer TcpServer(port, nodeId);
+  NetworkStream *stream = NULL;
+  TCPServer *tcpServerSocket = new TCPServer(4200);
 
-  WorkQueue<Task *>
-      queue;
-  Task *t1;
-  Task *t2;
 
-  // Thread Pool
-  ListenerThread *thread1 = new ListenerThread(queue);
-  ListenerThread *thread2 = new ListenerThread(queue);
+  stream = tcpServerSocket->accept();
+  printf("CLIENT CONNECTED\n");
+  memset(&message, 0, sizeof(message));
+  stream->recieve((char *)&message, sizeof(message));
+  printf("RECIEVED: %s\n", message);
+  memset(&message, 0, sizeof(message));
+  strcpy(message, "TEST RESPONSE");
 
-  thread1->start();
-  thread2->start();
-
-  TcpServer.startListenting();
-  while (true)
-  {
-
-    memset(&message, 0, sizeof(message));
-    recv(TcpServer.clientDescriptor, (char *)&message, sizeof(message), 0);
-
-    cout << "Client: " << message << endl;
-
-    if (strcmp(message, "QUIT") == 0)
-    {
-      cout << "ENDING SESSION" << endl;
-      send(TcpServer.clientDescriptor, (char *)"QUIT", strlen(message), 0);
-      TcpServer.stopListenting();
-      exit(0);
-    }
-
-    memset(&message, 0, sizeof(message));
-    strcpy(message, "TEST RESPONSE");
-    send(TcpServer.clientDescriptor, (char *)&message, strlen(message), 0);
-  }
+  stream->send(message, sizeof(message));
+  delete stream;
 }
