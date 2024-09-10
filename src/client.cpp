@@ -17,11 +17,22 @@ int main(int argc, char *argv[])
   NetworkStream *stream = connector->connect(4200, serverIpAddress);
 
   char message[256];
-  strcpy(message, "yo");
 
-  stream->send(message, sizeof(message));
-  memset(&message, 0, sizeof(message));
-  stream->recieve((char *)&message, sizeof(message));
-  printf("RECIEVED: %s\n", message);
+  while (true)
+  {
+    memset(&message, 0, sizeof(message));
+    string line;
+    getline(cin, line);
+    strcpy(message, line.c_str());
+    stream->send(message, sizeof(message));
+    memset(&message, 0, sizeof(message));
+    stream->recieve((char *)&message, sizeof(message));
+    printf("RECIEVED: %s\n", message);
+  }
+
+  // stream->send(message, sizeof(message));
+  // memset(&message, 0, sizeof(message));
+  // stream->recieve((char *)&message, sizeof(message));
+  // printf("RECIEVED: %s\n", message);
   delete stream;
 }

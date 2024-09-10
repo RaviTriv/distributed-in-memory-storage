@@ -1,6 +1,6 @@
 #include <string>
 #include <netinet/in.h>
-#include "network-stream.h"
+#include "./network-stream.h"
 
 class TCPServer
 {
@@ -18,5 +18,4 @@ public:
   ~TCPServer();
 
   NetworkStream *accept();
-private:
 };

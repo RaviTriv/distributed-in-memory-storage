@@ -6,6 +6,7 @@
 using namespace std;
 
 // A class to represent a data stream and send/receive data between TCP sockets
+#pragma once
 class NetworkStream
 {
   int socketDescriptor;
