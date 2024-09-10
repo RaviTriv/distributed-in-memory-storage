@@ -22,7 +22,7 @@ To run the client open a new terminal and CD into the repo.
 
 ## Multithreaded server
 
-A thread pool is utilized to handle multiple connections simultaneously. Every time a connection request is made from a client it is added to the a work queue. Each thread deques a connection request and services it till the connection no longer exists and then moves onto to the next request in the queue.
+A thread pool is utilized to handle multiple connections simultaneously. Every time a connection request is made from a client it is added to the connection work queue. Each thread deques a connection request and services it till the connection no longer exists and then moves onto to the next request in the queue.
 
 ![Multithreaded Server Diagram](/images/multiThreadedServer.png)
 
