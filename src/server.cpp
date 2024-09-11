@@ -11,6 +11,8 @@
 #include "../include/work-queue.h"
 #include "../include/tcp-server.h"
 #include "../include/network-task.h"
+#include <sys/types.h>
+#include <signal.h>
 
 using namespace std;
 int port = 4200;
@@ -20,6 +22,8 @@ char message[256];
 class ConnectionThread : public Thread
 {
   WorkQueue<NetworkTask *> &queue;
+  DataPersistence backup;
+  KeyValueStore store;
 
 public:
   ConnectionThread(WorkQueue<NetworkTask *> &q) : queue(q) {}
@@ -35,6 +39,22 @@ public:
 
       while ((stream->recieve((char *)&message, sizeof(message))) > 0)
       {
+        string tempMessage = message;
+        if (tempMessage.find("Persistence Write:") != string::npos)
+        {
+          tempMessage = tempMessage.substr(18, tempMessage.size() - 18);
+          pid_t cPid = fork();
+          int status = 0;
+          if (cPid == 0)
+          {
+            backup.write("test", "t");
+            exit(0);
+          }
+          else
+          {
+            store.set("test", tempMessage);
+          }
+        }
         printf("Thread %lu CLIENT SENT: %s\n", (long unsigned int)getThreadId(), message);
         memset(&message, 0, sizeof(message));
         strcpy(message, "TEST RESPONSE");
@@ -62,8 +82,8 @@ int main(int argc, char *argv[])
   char ipAddy[90];
   strcpy(ipAddy, "127.0.0.1");
 
-  KeyValueStore store;
-  DataPersistence backup;
+  // KeyValueStore store;
+  // DataPersistence backup;
 
   WorkQueue<NetworkTask *> queue;
   for (int i = 0; i < 3; i++)
