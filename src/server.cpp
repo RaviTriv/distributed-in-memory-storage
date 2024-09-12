@@ -45,7 +45,7 @@ public:
           tempMessage = tempMessage.substr(18, tempMessage.size() - 18);
           string k = tempMessage.substr(0, tempMessage.find(" "));
           string v = tempMessage.substr(tempMessage.find(" ") + 1, tempMessage.length() - k.length());
-          
+
           pid_t cPid = fork();
           int status = 0;
           if (cPid == 0)

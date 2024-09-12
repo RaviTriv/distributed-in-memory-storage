@@ -30,6 +30,8 @@ A thread pool is utilized to handle multiple connections simultaneously. Every t
 
 Persistence can be enabled to safetly store data. There are two ways this can be done, every x interval data is written to persistent storage or every time a write request is made to memory the request will be forked and also written to persistent storage.
 
+![Forked Persistence Diagram](/images/ForkedPersistence.png)
+
 ### Fork to write to durable storage
 
 From the client send a message in the following format.
