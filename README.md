@@ -33,7 +33,7 @@ Persistence can be enabled to safetly store data. There are two ways this can be
 ### Fork to write to durable storage
 
 From the client send a message in the following format.
-`Persistence Write:{Key} {Value}`
+<br>`Persistence Write:{Key} {Value}`
 
 ## Replication
 
