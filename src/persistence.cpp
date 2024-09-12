@@ -13,11 +13,12 @@ DataPersistence::DataPersistence()
 
 void DataPersistence::write(std::string key, std::string val)
 {
-  databin = fopen("../data/data.txt", "w");
+  databin = fopen("../data/data.txt", "r+");
   if (databin != NULL)
   {
     char line[1024];
-    sprintf(line, "{%s : %s}\n", key.c_str(), val.c_str());
+    sprintf(line, "\n{%s : %s}", key.c_str(), val.c_str());
+    fseek(databin, 0, SEEK_END);
     fputs(line, databin);
     fclose(databin);
   }
@@ -31,6 +32,7 @@ string DataPersistence::read()
 {
   char res[1024];
   databin = fopen("../data/data.txt", "r");
+  fgets(res, 1024, databin);
   fclose(databin);
   return res;
 }

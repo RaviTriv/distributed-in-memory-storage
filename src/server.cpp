@@ -83,24 +83,27 @@ int main(int argc, char *argv[])
   strcpy(ipAddy, "127.0.0.1");
 
   // KeyValueStore store;
-  // DataPersistence backup;
+  DataPersistence backup2;
+  backup2.write("test1", "res1");
+  backup2.write("test2", "res2");
+  backup2.write("test3", "res3");
 
-  WorkQueue<NetworkTask *> queue;
-  for (int i = 0; i < 3; i++)
-  {
-    ConnectionThread *cThread = new ConnectionThread(queue);
-    cThread->start();
-  }
+  // WorkQueue<NetworkTask *> queue;
+  // for (int i = 0; i < 3; i++)
+  // {
+  //   ConnectionThread *cThread = new ConnectionThread(queue);
+  //   cThread->start();
+  // }
 
-  NetworkStream *stream = NULL;
-  NetworkTask *task;
-  TCPServer *tcpServerSocket = new TCPServer(4200);
+  // NetworkStream *stream = NULL;
+  // NetworkTask *task;
+  // TCPServer *tcpServerSocket = new TCPServer(4200);
 
-  while (1)
-  {
-    NetworkStream *connection = tcpServerSocket->accept();
-    task = new NetworkTask(connection);
-    queue.add(task);
-  }
-  delete stream;
+  // while (1)
+  // {
+  //   NetworkStream *connection = tcpServerSocket->accept();
+  //   task = new NetworkTask(connection);
+  //   queue.add(task);
+  // }
+  // delete stream;
 }

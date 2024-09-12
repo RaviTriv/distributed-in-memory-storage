@@ -1,2 +1,3 @@
-
-{test : t}
+{test1 : res1}
+{test2 : res2}
+{test3 : res3}
