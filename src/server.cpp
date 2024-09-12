@@ -43,16 +43,19 @@ public:
         if (tempMessage.find("Persistence Write:") != string::npos)
         {
           tempMessage = tempMessage.substr(18, tempMessage.size() - 18);
+          string k = tempMessage.substr(0, tempMessage.find(" "));
+          string v = tempMessage.substr(tempMessage.find(" ") + 1, tempMessage.length() - k.length());
+          
           pid_t cPid = fork();
           int status = 0;
           if (cPid == 0)
           {
-            backup.write("test", "t");
+            backup.write(k.c_str(), v.c_str());
             exit(0);
           }
           else
           {
-            store.set("test", tempMessage);
+            store.set(k.c_str(), v.c_str());
           }
         }
         printf("Thread %lu CLIENT SENT: %s\n", (long unsigned int)getThreadId(), message);
@@ -83,27 +86,23 @@ int main(int argc, char *argv[])
   strcpy(ipAddy, "127.0.0.1");
 
   // KeyValueStore store;
-  DataPersistence backup2;
-  backup2.write("test1", "res1");
-  backup2.write("test2", "res2");
-  backup2.write("test3", "res3");
 
-  // WorkQueue<NetworkTask *> queue;
-  // for (int i = 0; i < 3; i++)
-  // {
-  //   ConnectionThread *cThread = new ConnectionThread(queue);
-  //   cThread->start();
-  // }
+  WorkQueue<NetworkTask *> queue;
+  for (int i = 0; i < 3; i++)
+  {
+    ConnectionThread *cThread = new ConnectionThread(queue);
+    cThread->start();
+  }
 
-  // NetworkStream *stream = NULL;
-  // NetworkTask *task;
-  // TCPServer *tcpServerSocket = new TCPServer(4200);
+  NetworkStream *stream = NULL;
+  NetworkTask *task;
+  TCPServer *tcpServerSocket = new TCPServer(4200);
 
-  // while (1)
-  // {
-  //   NetworkStream *connection = tcpServerSocket->accept();
-  //   task = new NetworkTask(connection);
-  //   queue.add(task);
-  // }
-  // delete stream;
+  while (1)
+  {
+    NetworkStream *connection = tcpServerSocket->accept();
+    task = new NetworkTask(connection);
+    queue.add(task);
+  }
+  delete stream;
 }

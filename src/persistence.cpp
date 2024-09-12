@@ -30,6 +30,7 @@ void DataPersistence::write(std::string key, std::string val)
 
 string DataPersistence::read()
 {
+  //TODO: read
   char res[1024];
   databin = fopen("../data/data.txt", "r");
   fgets(res, 1024, databin);
