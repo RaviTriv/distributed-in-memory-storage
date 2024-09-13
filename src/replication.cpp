@@ -2,7 +2,7 @@
 #include <arpa/inet.h>
 #include <netdb.h>
 
-Replication::Replication()
+Replication::Replication(int port, int nodeId)
 {
   struct hostent *host = gethostbyname(masterIpAddress);
   memset(&masterSockAddress, '\0', sizeof(masterSockAddress));
@@ -13,7 +13,7 @@ Replication::Replication()
   int slave = socket(AF_INET, SOCK_STREAM, 0);
   connect(slave, (sockaddr *)&masterSockAddress, sizeof(masterSockAddress));
   char message[2100];
-  strcpy(message, "CONNECT FROM SLAVE");
+  sprintf(message, "CONNECTED FROM SLAVE: %d %d", port, nodeId);
   send(slave, (char *)&message, strlen(message), 0);
 };
 

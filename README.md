@@ -40,3 +40,13 @@ From the client send a message in the following format.
 ## Replication
 
 Master-Slave Architecture
+
+Several instances of the server will be running with one master and `x` slaves. Only the master will handle write requests, read requests will be sent to the slaves. Slaves will updated every time a write request is made to master.
+
+When the master goes down it will automatically assign the role of master to a slave.
+
+1) client sends its information (port number) to master once its made as a replica
+
+Master Node Id = 1
+
+Config file?
