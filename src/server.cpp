@@ -51,7 +51,7 @@ public:
       {
         string tempMessage = message;
 
-        // Recieve connection from slave
+        // Recieve connection from slave and store data
         if (tempMessage.find("CONNECTED FROM SLAVE:") != string::npos)
         {
           tempMessage = tempMessage.substr(22, tempMessage.size() - 22);
@@ -62,40 +62,72 @@ public:
           slaveIndex++;
         }
 
-        // TODO: Move Persistence Write to approriate place
-        if (tempMessage.find("Persistence Write:") != string::npos)
+        // Basic write message, TODO:implement fork
+        if (tempMessage.find("Write:") != string::npos)
         {
-          tempMessage = tempMessage.substr(18, tempMessage.size() - 18);
+          tempMessage = tempMessage.substr(6, tempMessage.size() - 6);
           string k = tempMessage.substr(0, tempMessage.find(" "));
           string v = tempMessage.substr(tempMessage.find(" ") + 1, tempMessage.length() - k.length());
 
-          pid_t cPid = fork();
-          int status = 0;
-          if (cPid == 0)
+          store.set(k.c_str(), v.c_str());
+          if (slaveIndex > 0)
           {
-            backup.write(k.c_str(), v.c_str());
-            exit(0);
-          }
-          else
-          {
-            store.set(k.c_str(), v.c_str());
-            if (slaveIndex > 0)
+            for (int i = 0; i < slaveIndex; i++)
             {
-              for (int i = 0; i < slaveIndex; i++)
-              {
-                char *serverIpAddress = "127.0.0.1";
+              char *serverIpAddress = "127.0.0.1";
 
-                char t[256];
-                TCPClient *connector = new TCPClient();
-                printf("PORT: %d\n", slavePorts[i]);
-                NetworkStream *stream2 = connector->connect(slavePorts[i], serverIpAddress);
-                strcpy(t, "SENT FROM MASTER TO SLAVE");
-                stream2->send(t, sizeof(t));
-                delete stream2;
-              }
+              // char t[256];
+              TCPClient *connector = new TCPClient();
+              NetworkStream *stream2 = connector->connect(slavePorts[i], serverIpAddress);
+              // strcpy(t, message);
+              stream2->send(message, sizeof(message));
+              delete stream2;
             }
           }
         }
+
+        if (tempMessage.find("Read:") != string::npos)
+        {
+          tempMessage = tempMessage.substr(5, tempMessage.size() - 5);
+          string k = tempMessage.substr(0, tempMessage.find(" "));
+          // printf("RETRIEVED FROM STORE: %s\n", store.get(k).c_str());
+          if (nodeId == 1 && slaveIndex > 0)
+          {
+            TCPClient *connector = new TCPClient();
+            NetworkStream *stream2 = connector->connect(slavePorts[0], serverIpAddress);
+            stream2->send(message, sizeof(message));
+            delete stream2;
+          }
+          else
+          {
+            char t[256];
+            printf("%s\n", k.c_str());
+            strcpy(t, store.get(k).c_str());
+            printf("SERVICED FROM SERVER ON PORT: %d, Value: %s\n", port, t);
+            // send to correct location
+            stream->send(t, sizeof(t));
+          }
+        }
+
+        // if (tempMessage.find("Persistence Write:") != string::npos)
+        // {
+        //   tempMessage = tempMessage.substr(18, tempMessage.size() - 18);
+        //   string k = tempMessage.substr(0, tempMessage.find(" "));
+        //   string v = tempMessage.substr(tempMessage.find(" ") + 1, tempMessage.length() - k.length());
+
+        //   pid_t cPid = fork();
+        //   int status = 0;
+        //   if (cPid == 0)
+        //   {
+        //     backup.write(k.c_str(), v.c_str());
+        //     exit(0);
+        //   }
+        //   else
+        //   {
+        //     store.set(k.c_str(), v.c_str());
+        //   }
+        // }
+
         printf("Thread %lu CLIENT SENT: %s\n", (long unsigned int)getThreadId(), message);
         memset(&message, 0, sizeof(message));
         strcpy(message, "TEST RESPONSE");
@@ -133,7 +165,7 @@ int main(int argc, char *argv[])
   }
   NetworkStream *stream = NULL;
   NetworkTask *task;
-  TCPServer *tcpServerSocket = new TCPServer(4200);
+  TCPServer *tcpServerSocket = new TCPServer(port);
 
   while (1)
   {

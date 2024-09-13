@@ -19,5 +19,6 @@ TCPClient::connect(int port, const char *s)
   int client = socket(AF_INET, SOCK_STREAM, 0);
   int res = ::connect(client, (sockaddr *)&serverSockAddress, sizeof(serverSockAddress));
 
+  printf("RES: %d\n", res);
   return new NetworkStream(client, &serverSockAddress);
 }

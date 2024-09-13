@@ -26,6 +26,7 @@ void KeyValueStore::update(string key, string value)
   m[key] = value;
 }
 
-void KeyValueStore::deletePair(string key){
+void KeyValueStore::deletePair(string key)
+{
   m.erase(key);
 }

@@ -1,20 +1,17 @@
 #include "../include/replication.h"
+#include "../include/tcp-client.h"
 #include <arpa/inet.h>
 #include <netdb.h>
 
 Replication::Replication(int port, int nodeId)
 {
-  struct hostent *host = gethostbyname(masterIpAddress);
-  memset(&masterSockAddress, '\0', sizeof(masterSockAddress));
-  masterSockAddress.sin_family = AF_INET;
-  masterSockAddress.sin_addr.s_addr = inet_addr(inet_ntoa(*(struct in_addr *)*host->h_addr_list));
-  masterSockAddress.sin_port = htons(4200);
-
-  int slave = socket(AF_INET, SOCK_STREAM, 0);
-  connect(slave, (sockaddr *)&masterSockAddress, sizeof(masterSockAddress));
-  char message[2100];
+  char *serverIpAddress = "127.0.0.1";
+  TCPClient *connector = new TCPClient();
+  NetworkStream *stream = connector->connect(4200, serverIpAddress);
+  char message[256];
   sprintf(message, "CONNECTED FROM SLAVE: %d %d", port, nodeId);
-  send(slave, (char *)&message, strlen(message), 0);
+  stream->send(message, sizeof(message));
+  delete stream;
 };
 
 void Replication::connectToMaster() {
