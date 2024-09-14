@@ -37,7 +37,6 @@ public:
     store = s;
   }
 
-  // TODO: SHARE MEMORY BETWEEN THREADS
   void *run()
   {
     for (int i = 0;; i++)
@@ -108,7 +107,7 @@ public:
             printf("%s\n", k.c_str());
             strcpy(t, store->get(k).c_str());
             printf("SERVICED FROM SERVER ON PORT: %d, Value: %s\n", port, t);
-            // send to correct location
+            // if sending from replicam, we need to send from replica server to client
             stream->send(t, sizeof(t));
           }
         }
