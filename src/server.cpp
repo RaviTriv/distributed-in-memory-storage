@@ -55,7 +55,6 @@ public:
       {
         string tempMessage = message;
 
-        // Recieve connection from slave and store data
         if (tempMessage.find("CONNECTED FROM SLAVE:") != string::npos)
         {
           tempMessage = tempMessage.substr(22, tempMessage.size() - 22);
@@ -114,7 +113,7 @@ public:
         {
           tempMessage = tempMessage.substr(5, tempMessage.size() - 5);
           string k = tempMessage.substr(0, tempMessage.find(" "));
-          // printf("RETRIEVED FROM STORE: %s\n", store.get(k).c_str());
+
           if (nodeId == 1 && slaveIndex > 0)
           {
             TCPClient *connector = new TCPClient();
