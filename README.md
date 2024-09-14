@@ -34,8 +34,8 @@ Persistence can be enabled to safetly store data. There are two ways this can be
 
 ### Fork to write to durable storage
 
-From the client send a message in the following format.
-<br>`Persistence Write:{Key} {Value}`
+Persistence can be enabled/disabled via command line by passing 1 to enable 0 to disable.
+<br> `./server ${PORT} ${NODE_ID} ${Persistence}`
 
 ## Replication
 
@@ -45,7 +45,7 @@ Several instances of the server will be running with one master and `x` slaves. 
 
 When the master goes down it will automatically assign the role of master to a slave.
 
-1) client sends its information (port number) to master once its made as a replica
+1. client sends its information (port number) to master once its made as a replica
 
 Master Node Id = 1
 

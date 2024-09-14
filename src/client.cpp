@@ -30,9 +30,5 @@ int main(int argc, char *argv[])
     printf("RECIEVED: %s\n", message);
   }
 
-  // stream->send(message, sizeof(message));
-  // memset(&message, 0, sizeof(message));
-  // stream->recieve((char *)&message, sizeof(message));
-  // printf("RECIEVED: %s\n", message);
   delete stream;
 }

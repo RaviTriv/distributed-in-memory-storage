@@ -18,6 +18,7 @@
 using namespace std;
 int port = 4200;
 int nodeId = 1;
+int persistence = 0;
 int slaveIndex = 0;
 int slavePorts[5];
 int slaveNodeId[5];
@@ -72,17 +73,33 @@ public:
           string k = tempMessage.substr(0, tempMessage.find(" "));
           string v = tempMessage.substr(tempMessage.find(" ") + 1, tempMessage.length() - k.length());
 
-          store->set(k.c_str(), v.c_str());
+          if (persistence == 1)
+          {
+            pid_t cPid = fork();
+            int status = 0;
+            if (cPid == 0)
+            {
+              backup.write(k.c_str(), v.c_str());
+              exit(0);
+            }
+            else
+            {
+              store->set(k.c_str(), v.c_str());
+            }
+          }
+          else
+          {
+            store->set(k.c_str(), v.c_str());
+          }
+
           if (slaveIndex > 0)
           {
             for (int i = 0; i < slaveIndex; i++)
             {
               char *serverIpAddress = "127.0.0.1";
 
-              // char t[256];
               TCPClient *connector = new TCPClient();
               NetworkStream *stream2 = connector->connect(slavePorts[i], serverIpAddress);
-              // strcpy(t, message);
               stream2->send(message, sizeof(message));
               delete stream2;
             }
@@ -112,25 +129,6 @@ public:
           }
         }
 
-        // if (tempMessage.find("Persistence Write:") != string::npos)
-        // {
-        //   tempMessage = tempMessage.substr(18, tempMessage.size() - 18);
-        //   string k = tempMessage.substr(0, tempMessage.find(" "));
-        //   string v = tempMessage.substr(tempMessage.find(" ") + 1, tempMessage.length() - k.length());
-
-        //   pid_t cPid = fork();
-        //   int status = 0;
-        //   if (cPid == 0)
-        //   {
-        //     backup.write(k.c_str(), v.c_str());
-        //     exit(0);
-        //   }
-        //   else
-        //   {
-        //     store.set(k.c_str(), v.c_str());
-        //   }
-        // }
-
         printf("Thread %lu CLIENT SENT: %s\n", (long unsigned int)getThreadId(), message);
         memset(&message, 0, sizeof(message));
         strcpy(message, "TEST RESPONSE");
@@ -144,10 +142,11 @@ public:
 
 int main(int argc, char *argv[])
 {
-  if (argc >= 2)
+  if (argc >= 3)
   {
     port = atoi(argv[1]);
     nodeId = atoi(argv[2]);
+    persistence = atoi(argv[3]);
   }
 
   if (nodeId != 1)
