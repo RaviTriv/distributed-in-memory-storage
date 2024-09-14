@@ -29,11 +29,15 @@ class ConnectionThread : public Thread
 {
   WorkQueue<NetworkTask *> &queue;
   DataPersistence backup;
-  KeyValueStore store;
+  KeyValueStore *store;
 
 public:
-  ConnectionThread(WorkQueue<NetworkTask *> &q) : queue(q) {}
+  ConnectionThread(WorkQueue<NetworkTask *> &q, KeyValueStore *s) : queue(q)
+  {
+    store = s;
+  }
 
+  // TODO: SHARE MEMORY BETWEEN THREADS
   void *run()
   {
     for (int i = 0;; i++)
@@ -69,7 +73,7 @@ public:
           string k = tempMessage.substr(0, tempMessage.find(" "));
           string v = tempMessage.substr(tempMessage.find(" ") + 1, tempMessage.length() - k.length());
 
-          store.set(k.c_str(), v.c_str());
+          store->set(k.c_str(), v.c_str());
           if (slaveIndex > 0)
           {
             for (int i = 0; i < slaveIndex; i++)
@@ -102,7 +106,7 @@ public:
           {
             char t[256];
             printf("%s\n", k.c_str());
-            strcpy(t, store.get(k).c_str());
+            strcpy(t, store->get(k).c_str());
             printf("SERVICED FROM SERVER ON PORT: %d, Value: %s\n", port, t);
             // send to correct location
             stream->send(t, sizeof(t));
@@ -156,11 +160,11 @@ int main(int argc, char *argv[])
   strcpy(ipAddy, "127.0.0.1");
 
   // KeyValueStore store;
-
+  KeyValueStore store;
   WorkQueue<NetworkTask *> queue;
   for (int i = 0; i < 3; i++)
   {
-    ConnectionThread *cThread = new ConnectionThread(queue);
+    ConnectionThread *cThread = new ConnectionThread(queue, &store);
     cThread->start();
   }
   NetworkStream *stream = NULL;
