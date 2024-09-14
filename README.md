@@ -49,4 +49,3 @@ When the master goes down it will automatically assign the role of master to a s
 
 Master Node Id = 1
 
-Config file?

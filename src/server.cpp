@@ -18,6 +18,7 @@
 using namespace std;
 int port = 4200;
 int nodeId = 1;
+int slaveToUse = 0;
 int persistence = 0;
 int slaveIndex = 0;
 int slavePorts[5];
@@ -117,8 +118,16 @@ public:
           if (nodeId == 1 && slaveIndex > 0)
           {
             TCPClient *connector = new TCPClient();
-            NetworkStream *stream2 = connector->connect(slavePorts[0], serverIpAddress);
+            NetworkStream *stream2 = connector->connect(slavePorts[slaveToUse], serverIpAddress);
             stream2->send(message, sizeof(message));
+            if (slaveToUse >= 4)
+            {
+              slaveToUse = 0;
+            }
+            else
+            {
+              slaveToUse++;
+            }
             delete stream2;
           }
           else
@@ -128,7 +137,7 @@ public:
             strcpy(t, store->get(k).c_str());
             printf("SERVICED FROM SERVER ON PORT: %d, Value: %s\n", port, t);
             // if sending from replica, we need to send from replica server to client
-            stream->send(t, sizeof(t));
+            //stream->send(t, sizeof(t));
           }
         }
 
@@ -162,7 +171,7 @@ int main(int argc, char *argv[])
 
   KeyValueStore store;
   WorkQueue<NetworkTask *> queue;
-  for (int i = 0; i < 3; i++)
+  for (int i = 0; i < 5; i++)
   {
     ConnectionThread *cThread = new ConnectionThread(queue, &store);
     cThread->start();
