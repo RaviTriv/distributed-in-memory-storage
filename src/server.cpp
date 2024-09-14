@@ -76,7 +76,6 @@ public:
           if (persistence == 1)
           {
             pid_t cPid = fork();
-            int status = 0;
             if (cPid == 0)
             {
               backup.write(k.c_str(), v.c_str());
@@ -94,14 +93,19 @@ public:
 
           if (slaveIndex > 0)
           {
-            for (int i = 0; i < slaveIndex; i++)
+            pid_t cPid = fork();
+            if (cPid == 0)
             {
-              char *serverIpAddress = "127.0.0.1";
+              for (int i = 0; i < slaveIndex; i++)
+              {
+                char *serverIpAddress = "127.0.0.1";
 
-              TCPClient *connector = new TCPClient();
-              NetworkStream *stream2 = connector->connect(slavePorts[i], serverIpAddress);
-              stream2->send(message, sizeof(message));
-              delete stream2;
+                TCPClient *connector = new TCPClient();
+                NetworkStream *stream2 = connector->connect(slavePorts[i], serverIpAddress);
+                stream2->send(message, sizeof(message));
+                delete stream2;
+              }
+              exit(0);
             }
           }
         }
@@ -124,7 +128,7 @@ public:
             printf("%s\n", k.c_str());
             strcpy(t, store->get(k).c_str());
             printf("SERVICED FROM SERVER ON PORT: %d, Value: %s\n", port, t);
-            // if sending from replicam, we need to send from replica server to client
+            // if sending from replica, we need to send from replica server to client
             stream->send(t, sizeof(t));
           }
         }
@@ -157,7 +161,6 @@ int main(int argc, char *argv[])
   char ipAddy[90];
   strcpy(ipAddy, "127.0.0.1");
 
-  // KeyValueStore store;
   KeyValueStore store;
   WorkQueue<NetworkTask *> queue;
   for (int i = 0; i < 3; i++)
