@@ -163,6 +163,7 @@ int main(int argc, char *argv[])
 
   if (nodeId != 1)
   {
+    //IMPLEMENT NEW MASTER IF EXISTING MASTER GOES DOWN
     Replication replica(port, nodeId);
   }
 
