@@ -137,7 +137,7 @@ public:
             strcpy(t, store->get(k).c_str());
             printf("SERVICED FROM SERVER ON PORT: %d, Value: %s\n", port, t);
             // if sending from replica, we need to send from replica server to client
-            //stream->send(t, sizeof(t));
+            stream->send(t, sizeof(t));
           }
         }
 
