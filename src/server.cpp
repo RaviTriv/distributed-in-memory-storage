@@ -56,6 +56,13 @@ public:
       {
         string tempMessage = message;
 
+        if (tempMessage.find("NEW MASTER") != string::npos)
+        {
+          nodeId = 1;
+          //Update slavePorts
+          //Update slaveNodeIds
+        }
+
         if (tempMessage.find("CONNECTED FROM SLAVE:") != string::npos)
         {
           tempMessage = tempMessage.substr(22, tempMessage.size() - 22);

@@ -64,6 +64,13 @@ int main(int argc, char *argv[])
     {
       printf("FAILED to CONNECT\n");
       ps.pop_back();
+
+      // Send message to update node id
+      NetworkStream *stream = connector->connect(port, serverIpAddress);
+      memset(&message, 0, sizeof(message));
+      strcpy(message, "NEW MASTER");
+      stream->send(message, sizeof(message));
+      delete stream;
     }
   }
 }
