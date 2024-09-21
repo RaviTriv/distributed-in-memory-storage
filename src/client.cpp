@@ -16,43 +16,43 @@ int main(int argc, char *argv[])
   // TAKE INPUT OF NODE IDS
   // char *serverIpAddress = argv[1];
   char *serverIpAddress = "127.0.0.1";
-  vector<int> ps;
+  vector<int> ports;
   for (int i = 0; i < argc; i++)
   {
-    ps.push_back(atoi(argv[i]));
+    ports.push_back(atoi(argv[i]));
   }
 
-  for (int i = 1; i < ps.size(); i++)
+  for (int i = 1; i < ports.size(); i++)
   {
-    printf("INIT PORTS: %d\n", ps.at(i));
+    printf("INIT PORTS: %d\n", ports.at(i));
   }
   char line[256];
   char message[256];
 
-  // ps.push_back(4201);
-  // ps.push_back(4200);
+  // ports.push_back(4201);
+  // ports.push_back(4200);
   int port = 4200;
   while (true)
   {
     string line;
     getline(cin, line);
 
-    if (ps.size() > 2)
+    if (ports.size() > 2)
     {
       if (line.find("Read:") != string::npos)
       {
-        port = ps.at(ps.size() - 2);
+        port = ports.at(ports.size() - 2);
       }
       else
       {
-        port = ps.at(ps.size() - 1);
+        port = ports.at(ports.size() - 1);
       }
     }
     else
     {
-      port = ps.at(1);
+      port = ports.at(1);
     }
-    printf("SIZE: %lu\n", ps.size());
+    printf("SIZE: %lu\n", ports.size());
     printf("USING PORT: %d\n", port);
 
     TCPClient *connector = new TCPClient();
@@ -73,7 +73,7 @@ int main(int argc, char *argv[])
     {
       printf("FAILED to CONNECT\n");
       // Remove connection that is down
-      ps.pop_back();
+      ports.pop_back();
 
       // Send message to update node id
       NetworkStream *stream = connector->connect(port, serverIpAddress);

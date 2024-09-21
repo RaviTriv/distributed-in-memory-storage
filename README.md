@@ -16,7 +16,7 @@ To run the client open a new terminal and CD into the repo.
 
 1. `cd build`
 2. `make client`
-3. `./client`
+3. `./client ${PORT}`
 
 # Features
 
@@ -48,4 +48,3 @@ When the master goes down it will automatically assign the role of master to a s
 1. client sends its information (port number) to master once its made as a replica
 
 Master Node Id = 1
-
