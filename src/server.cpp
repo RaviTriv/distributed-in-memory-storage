@@ -56,11 +56,16 @@ public:
       {
         string tempMessage = message;
 
+        for (int i = 0; i < sizeof(slavePorts); i++)
+        {
+          printf("SLAVE PORT: %d\n", slavePorts[i]);
+        }
+
         if (tempMessage.find("NEW MASTER") != string::npos)
         {
           nodeId = 1;
-          //Update slavePorts
-          //Update slaveNodeIds
+          // Update slavePorts
+          // Update slaveNodeIds
         }
 
         if (tempMessage.find("CONNECTED FROM SLAVE:") != string::npos)
@@ -170,8 +175,8 @@ int main(int argc, char *argv[])
 
   if (nodeId != 1)
   {
-    //IMPLEMENT NEW MASTER IF EXISTING MASTER GOES DOWN
-    Replication replica(port, nodeId);
+    // IMPLEMENT NEW MASTER IF EXISTING MASTER GOES DOWN
+    Replication replica(4200, nodeId);
   }
 
   char ipAddy[90];

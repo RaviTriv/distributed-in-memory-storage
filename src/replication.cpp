@@ -7,7 +7,7 @@ Replication::Replication(int port, int nodeId)
 {
   char *serverIpAddress = "127.0.0.1";
   TCPClient *connector = new TCPClient();
-  NetworkStream *stream = connector->connect(4200, serverIpAddress);
+  NetworkStream *stream = connector->connect(port, serverIpAddress);
   char message[256];
   sprintf(message, "CONNECTED FROM SLAVE: %d %d", port, nodeId);
   stream->send(message, sizeof(message));
