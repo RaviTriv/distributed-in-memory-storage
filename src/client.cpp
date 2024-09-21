@@ -5,6 +5,7 @@
 #include <arpa/inet.h>
 #include <iostream>
 #include <stdexcept>
+#include <vector>
 
 #include "../include/tcp-client.h"
 using namespace std;
@@ -19,19 +20,30 @@ int main(int argc, char *argv[])
   char line[256];
   char message[256];
   int ports[5] = {4200, 4201};
+  vector<int> ps;
+  ps.push_back(4201);
+  ps.push_back(4200);
   int port = 4200;
+  int skip = 0;
   while (true)
   {
     string line;
     getline(cin, line);
 
-    if (line.find("Read:") != string::npos)
+    if (ps.size() > 1)
     {
-      port = 4201;
+      if (line.find("Read:") != string::npos)
+      {
+        port = ps.at(ps.size() - 2);
+      }
+      else
+      {
+        port = ps.at(ps.size() - 1);
+      }
     }
     else
     {
-      port = 4200;
+      port = ps.at(0);
     }
 
     TCPClient *connector = new TCPClient();
@@ -51,8 +63,7 @@ int main(int argc, char *argv[])
     catch (const invalid_argument &e)
     {
       printf("FAILED to CONNECT\n");
-      // UPDATE MASTER HERE
-      // TRY TO CONNECT AGAIN
+      ps.pop_back();
     }
   }
 }
