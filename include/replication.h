@@ -11,7 +11,7 @@ using namespace std;
 class Replication
 {
 public:
-  Replication(int port, int nodeId);
+  Replication(int connectToPort, int port, int nodeId);
   void connectToMaster();
 
 private:
