@@ -65,7 +65,24 @@ public:
         if (tempMessage.find("NEW MASTER") != string::npos)
         {
           nodeId = 1;
+          printf("MESSAGE:%s\n", tempMessage.c_str());
+          tempMessage = tempMessage.substr(11, tempMessage.size() - 11);
+          printf("SLAVE PORTS: %s\n", tempMessage.c_str());
           // Update slavePorts
+          while (tempMessage.size() >= 5)
+          {
+            int sPort = atoi(tempMessage.substr(0, 5).c_str());
+            printf("RECIEVED SLAVE PORT:%d\n", atoi(tempMessage.substr(0, 5).c_str()));
+            if (sPort != port)
+            {
+              slavePorts.push_back(sPort);
+            }
+            tempMessage = tempMessage.substr(5, tempMessage.size());
+          }
+          for (int i = 0; i < slavePorts.size(); i++)
+          {
+            printf("SLAVE PORT IS: %d\n", slavePorts.at(i));
+          }
           // Update slaveNodeIds
         }
 
@@ -104,21 +121,24 @@ public:
             store->set(k.c_str(), v.c_str());
           }
           printf("SLAVE INDEX: %d\n", slaveIndex);
-          if (slaveIndex > 0)
+          if (slavePorts.size() > 0)
           {
             pid_t cPid = fork();
             if (cPid == 0)
             {
               for (int i = 0; i < slavePorts.size(); i++)
               {
-                printf("SLAVE PORT: %d\n", slavePorts.at(i));
+                if (slavePorts.at(i) != port)
+                {
+                  printf("SLAVE PORT: %d\n", slavePorts.at(i));
 
-                char *serverIpAddress = "127.0.0.1";
+                  char *serverIpAddress = "127.0.0.1";
 
-                TCPClient *connector = new TCPClient();
-                NetworkStream *stream2 = connector->connect(slavePorts.at(i), serverIpAddress);
-                stream2->send(message, sizeof(message));
-                delete stream2;
+                  TCPClient *connector = new TCPClient();
+                  NetworkStream *stream2 = connector->connect(slavePorts.at(i), serverIpAddress);
+                  stream2->send(message, sizeof(message));
+                  delete stream2;
+                }
               }
               exit(0);
             }

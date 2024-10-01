@@ -28,6 +28,7 @@ int main(int argc, char *argv[])
   }
   char line[256];
   char message[256];
+  // 0 4202 4201
 
   // ports.push_back(4201);
   // ports.push_back(4200);
@@ -74,11 +75,20 @@ int main(int argc, char *argv[])
       printf("FAILED to CONNECT\n");
       // Remove connection that is down
       ports.pop_back();
-
+      port = ports.at(ports.size() - 1);
+      string sendPorts = "NEW MASTER ";
+      for (int i = 1; i < ports.size(); i++)
+      {
+        sendPorts += to_string(ports.at(i));
+        sendPorts += " ";
+        // printf("PORT: %d\n", ports.at(i));
+      }
+      printf("SEND MESSAGE: %s\n", sendPorts.c_str());
       // Send message to update node id
       NetworkStream *stream = connector->connect(port, serverIpAddress);
       memset(&message, 0, sizeof(message));
-      strcpy(message, "NEW MASTER");
+      // SEND SLAVE PORTS FROM HERE AS WELL
+      strcpy(message, sendPorts.c_str());
       stream->send(message, sizeof(message));
       delete stream;
     }
