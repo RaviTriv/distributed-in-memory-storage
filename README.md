@@ -1,4 +1,4 @@
-# in-memory-storage
+# distributed-in-memory-storage
 
 # How to run
 
@@ -28,7 +28,7 @@ A thread pool is utilized to handle multiple connections simultaneously. Every t
 
 ## Data persistence
 
-Persistence can be enabled to safetly store data. There are two ways this can be done, every `x` interval data is written to persistent storage or every time a write request is made to memory the request will be forked and also written to persistent storage.
+Persistence can be enabled to safetly store data. Every time a write request is made to memory the request will be forked and also written to persistent storage.
 
 ![Forked Persistence Diagram](/images/ForkedPersistence.png)
 
@@ -41,10 +41,6 @@ Persistence can be enabled/disabled via command line by passing 1 to enable 0 to
 
 Master-Slave Architecture
 
-Several instances of the server will be running with one master and `x` slaves. Only the master will handle write requests, read requests will be sent to the slaves. Slaves will updated every time a write request is made to master.
+![Master Slave Diagram](/images/master-slave.png)
 
-When the master goes down a slave will be promoted to the role of master to a slave.
-
-1. client sends its information (port number) to master once its made as a replica
-
-Master Node Id = 1
+Several instances of the server will be running with one master and `x` slaves. Only the master will handle write requests, read requests will be sent to the slaves. Slaves will be updated every time a write request is made to master. When the master goes down a slave will be promoted to the role of master to a slave.
