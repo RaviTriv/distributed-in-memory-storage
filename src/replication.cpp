@@ -3,7 +3,11 @@
 #include <arpa/inet.h>
 #include <netdb.h>
 
-Replication::Replication(int connectToPort, int port, int nodeId)
+Replication::Replication(int p) {
+  port = p;
+};
+
+void Replication::connectToMaster(int connectToPort, int port, int nodeId)
 {
   char *serverIpAddress = "127.0.0.1";
   TCPClient *connector = new TCPClient();
@@ -14,6 +18,21 @@ Replication::Replication(int connectToPort, int port, int nodeId)
   delete stream;
 };
 
-void Replication::connectToMaster() {
+void Replication::addSlave(string msg)
+{
+  string p = msg.substr(0, 4);
+  slavePorts.push_back(stoi(p));
+};
 
+void Replication::addSlaves(string msg) {
+  while (msg.size() >= 5)
+  {
+    int sPort = atoi(msg.substr(0, 5).c_str());
+    printf("RECIEVED SLAVE PORT:%d\n", atoi(msg.substr(0, 5).c_str()));
+    if (sPort != port)
+    {
+      slavePorts.push_back(sPort);
+    }
+    msg = msg.substr(5, msg.size());
+  }
 };

@@ -22,7 +22,6 @@ int nodeId = 1;
 int slaveToUse = 0;
 int persistence = 0;
 int slaveIndex = 0;
-vector<int> slavePorts;
 int slaveNodeId[5];
 char message[256];
 int replicaExists = 0;
@@ -33,21 +32,19 @@ class ConnectionThread : public Thread
   WorkQueue<NetworkTask *> &queue;
   DataPersistence backup;
   KeyValueStore *store;
+  Replication *replica;
 
 public:
-  ConnectionThread(WorkQueue<NetworkTask *> &q, KeyValueStore *s) : queue(q)
+  ConnectionThread(WorkQueue<NetworkTask *> &q, KeyValueStore *s, Replication *r) : queue(q)
   {
     store = s;
+    replica = r;
   }
 
   void *run()
   {
     for (int i = 0;; i++)
     {
-      // on read request check if replicas exist
-      // redirect request to replic
-      // once request is written, loop through replicas and update
-
       printf("Thread %lu WAITING\n", (long unsigned int)getThreadId());
       NetworkTask *task = queue.remove();
       printf("Thread %lu, RECIEVED\n", (long unsigned int)getThreadId());
@@ -56,32 +53,16 @@ public:
       while ((stream->recieve((char *)&message, sizeof(message))) > 0)
       {
         string tempMessage = message;
-
-        for (int i = 0; i < slavePorts.size(); i++)
-        {
-          printf("SLAVE PORT: %d\n", slavePorts.at(i));
-        }
-
         if (tempMessage.find("NEW MASTER") != string::npos)
         {
           nodeId = 1;
           printf("MESSAGE:%s\n", tempMessage.c_str());
           tempMessage = tempMessage.substr(11, tempMessage.size() - 11);
           printf("SLAVE PORTS: %s\n", tempMessage.c_str());
-          // Update slavePorts
-          while (tempMessage.size() >= 5)
+          replica->addSlaves(tempMessage);
+          for (int i = 0; i < replica->slavePorts.size(); i++)
           {
-            int sPort = atoi(tempMessage.substr(0, 5).c_str());
-            printf("RECIEVED SLAVE PORT:%d\n", atoi(tempMessage.substr(0, 5).c_str()));
-            if (sPort != port)
-            {
-              slavePorts.push_back(sPort);
-            }
-            tempMessage = tempMessage.substr(5, tempMessage.size());
-          }
-          for (int i = 0; i < slavePorts.size(); i++)
-          {
-            printf("SLAVE PORT IS: %d\n", slavePorts.at(i));
+            printf("SLAVE PORT IS: %d\n", replica->slavePorts.at(i));
           }
           // Update slaveNodeIds
         }
@@ -89,9 +70,9 @@ public:
         if (tempMessage.find("CONNECTED FROM SLAVE:") != string::npos)
         {
           tempMessage = tempMessage.substr(22, tempMessage.size() - 22);
-          string p = tempMessage.substr(0, 4);
+          replica->addSlave(tempMessage);
+          // DONT THINK THE BOTTOM THREE LINES ARE NECESSARY
           string nId = tempMessage.substr(5, 6);
-          slavePorts.push_back(stoi(p));
           slaveNodeId[slaveIndex] = stoi(nId);
           slaveIndex++;
         }
@@ -121,21 +102,21 @@ public:
             store->set(k.c_str(), v.c_str());
           }
           printf("SLAVE INDEX: %d\n", slaveIndex);
-          if (slavePorts.size() > 0)
+          if (replica->slavePorts.size() > 0)
           {
             pid_t cPid = fork();
             if (cPid == 0)
             {
-              for (int i = 0; i < slavePorts.size(); i++)
+              for (int i = 0; i < replica->slavePorts.size(); i++)
               {
-                if (slavePorts.at(i) != port)
+                if (replica->slavePorts.at(i) != port)
                 {
-                  printf("SLAVE PORT: %d\n", slavePorts.at(i));
+                  printf("SLAVE PORT: %d\n", replica->slavePorts.at(i));
 
                   char *serverIpAddress = "127.0.0.1";
 
                   TCPClient *connector = new TCPClient();
-                  NetworkStream *stream2 = connector->connect(slavePorts.at(i), serverIpAddress);
+                  NetworkStream *stream2 = connector->connect(replica->slavePorts.at(i), serverIpAddress);
                   stream2->send(message, sizeof(message));
                   delete stream2;
                 }
@@ -177,10 +158,11 @@ int main(int argc, char *argv[])
     persistence = atoi(argv[3]);
   }
 
+  Replication replica(port);
+
   if (nodeId != 1)
   {
-    // IMPLEMENT NEW MASTER IF EXISTING MASTER GOES DOWN
-    Replication replica(4200, port, nodeId);
+    replica.connectToMaster(4200, port, nodeId);
   }
 
   char ipAddy[90];
@@ -190,7 +172,7 @@ int main(int argc, char *argv[])
   WorkQueue<NetworkTask *> queue;
   for (int i = 0; i < 5; i++)
   {
-    ConnectionThread *cThread = new ConnectionThread(queue, &store);
+    ConnectionThread *cThread = new ConnectionThread(queue, &store, &replica);
     cThread->start();
   }
   NetworkStream *stream = NULL;
