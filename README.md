@@ -35,7 +35,7 @@ Persistence can be enabled to safetly store data. Every time a write request is 
 ### Fork to write to durable storage
 
 Persistence can be enabled/disabled via command line by passing 1 to enable 0 to disable.
-<br> `./server ${PORT} ${NODE_ID} ${Persistence}`
+<br> `./server ${PORT} ${MASTER_PORT} ${NODE_ID} ${Persistence}`
 
 ## Replication
 

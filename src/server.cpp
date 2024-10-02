@@ -18,6 +18,7 @@
 
 using namespace std;
 int port = 4200;
+int masterPort = 4200;
 int nodeId = 1;
 int slaveToUse = 0;
 int persistence = 0;
@@ -89,9 +90,10 @@ public:
           {
             store->set(k.c_str(), v.c_str());
           }
-
+          printf("BEFORE SLAVES EXIST\n");
           if (replica->slavesExist())
           {
+            printf("INSIDE SLAVES EXIST\n");
             pid_t cPid = fork();
             if (cPid == 0)
             {
@@ -137,28 +139,38 @@ public:
 
 int main(int argc, char *argv[])
 {
-  //make this into a loop instead
+  // make this into a loop instead
+  // PORT MASTER_PORT NODE_ID PERSISTENCE
   for(int i = 1; i < argc; i++){
     inputs.push_back(atoi(argv[i]));
-    //printf("ARGUMENT %d %d\n", i, atoi(argv[i]));
   }
   for (int i = 0; i < inputs.size(); i++)
   {
     printf("ARGUMENT %d %d\n", i, inputs.at(i));
   }
-  if (argc >= 3)
-  {
-    port = atoi(argv[1]);
-    nodeId = atoi(argv[2]);
-    persistence = atoi(argv[3]);
+  if(inputs.size() >= 1){
+    port = inputs.at(0);
   }
+  if (inputs.size() >= 2)
+  {
+    masterPort = inputs.at(1);
+  }
+  if (inputs.size() >= 3)
+  {
+    nodeId = inputs.at(2);
+  }
+  if (inputs.size() >= 4)
+  {
+    persistence = inputs.at(3);
+  }
+
 
   Replication replica(port);
 
   if (nodeId != 1)
   {
     //take master port input
-    replica.connectToMaster(4200, port, nodeId);
+    replica.connectToMaster(masterPort, port, nodeId);
   }
 
   char ipAddy[90];

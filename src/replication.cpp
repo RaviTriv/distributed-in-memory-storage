@@ -41,7 +41,8 @@ void Replication::addSlaves(string msg)
 
 int Replication::slavesExist()
 {
-  return (slavePorts.size() > 1);
+  printf("SLAVE PORTS SIZE: %lu\n", slavePorts.size());
+  return (slavePorts.size() > 0);
 };
 
 int Replication::slavePortsSize(){
