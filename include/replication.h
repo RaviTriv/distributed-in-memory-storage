@@ -18,6 +18,10 @@ public:
   void addSlave(string msg);
   void addSlaves(string msg);
   void connectToMaster(int connectToPort, int port, int nodeId);
+  int slavesExist();
+  int slavePortsSize();
+  int getSlavePort(int index);
+
 private:
   char *masterIpAddress = "127.0.0.1";
   sockaddr_in masterSockAddress;

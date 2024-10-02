@@ -3,7 +3,8 @@
 #include <arpa/inet.h>
 #include <netdb.h>
 
-Replication::Replication(int p) {
+Replication::Replication(int p)
+{
   port = p;
 };
 
@@ -24,7 +25,8 @@ void Replication::addSlave(string msg)
   slavePorts.push_back(stoi(p));
 };
 
-void Replication::addSlaves(string msg) {
+void Replication::addSlaves(string msg)
+{
   while (msg.size() >= 5)
   {
     int sPort = atoi(msg.substr(0, 5).c_str());
@@ -36,3 +38,17 @@ void Replication::addSlaves(string msg) {
     msg = msg.substr(5, msg.size());
   }
 };
+
+int Replication::slavesExist()
+{
+  return (slavePorts.size() > 1);
+};
+
+int Replication::slavePortsSize(){
+  return slavePorts.size();
+}
+
+int Replication::getSlavePort(int index)
+{
+  return slavePorts.at(index);
+}
