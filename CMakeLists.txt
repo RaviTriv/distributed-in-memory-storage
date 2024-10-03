@@ -15,6 +15,7 @@ set(SERVER_SOURCES
     src/network-stream.cpp
     src/tcp-client.cpp
     src/tcp-server.cpp
+    src/connection-thread.cpp
 )
 
 set(CLIENT_SOURCES

@@ -12,9 +12,13 @@ using namespace std;
 class Replication
 {
 public:
-  Replication(int p);
+  Replication(int p, int nId, int per);
   int port;
+  int nodeId;
+  int persistence;
   vector<int> slavePorts;
+  void setNodeId(int nId);
+  int getNodeId();
   void addSlave(string msg);
   void addSlaves(string msg);
   void connectToMaster(int connectToPort, int port, int nodeId);

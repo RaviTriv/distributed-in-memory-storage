@@ -3,9 +3,11 @@
 #include <arpa/inet.h>
 #include <netdb.h>
 
-Replication::Replication(int p)
+Replication::Replication(int p, int nId, int per)
 {
   port = p;
+  nodeId = nId;
+  persistence = per;
 };
 
 void Replication::connectToMaster(int connectToPort, int port, int nodeId)
@@ -41,7 +43,6 @@ void Replication::addSlaves(string msg)
 
 int Replication::slavesExist()
 {
-  printf("SLAVE PORTS SIZE: %lu\n", slavePorts.size());
   return (slavePorts.size() > 0);
 };
 
@@ -52,4 +53,12 @@ int Replication::slavePortsSize(){
 int Replication::getSlavePort(int index)
 {
   return slavePorts.at(index);
+}
+
+void Replication::setNodeId(int nId){
+  nodeId = nId;
+}
+
+int Replication::getNodeId(){
+  return nodeId;
 }
