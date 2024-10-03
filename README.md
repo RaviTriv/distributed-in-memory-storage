@@ -10,7 +10,7 @@ Building and running server
 4. `make server`
 5. `./server`
 
-Parameters can be passed in by doing the following, `./server ${PORT} ${NODE_ID}`
+Parameters can be passed in by doing the following, `./server ${PORT}  {MASTER_PORT} ${NODE_ID} ${Persistence}`
 
 To run the client open a new terminal and CD into the repo.
 
