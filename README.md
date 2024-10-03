@@ -1,5 +1,5 @@
 # distributed-in-memory-storage
-
+This is a distributed in-memory-storage server for low latency and high throughput.
 # How to run
 
 Building and running server
